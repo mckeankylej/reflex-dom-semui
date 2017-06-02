@@ -226,12 +226,13 @@ data DropdownOptFlag =
     -- ^ Make menu items are searchable
   | DOFSelection
     -- ^ Dropdown is a selection among alternatives
+  | DOFItem
   deriving (Eq, Enum, Show)
 
 -- Helper function to build class attribute for dropdown
 dropdownClass :: [DropdownOptFlag] -> T.Text
-dropdownClass opts = T.unwords $ "ui" : (flags ++ ["dropdown"])
-  where flags = map (T.toLower . T.drop 3 . tshow) $ L.sortOn fromEnum opts
+dropdownClass opts = T.unwords $ "ui" : (flags opts ++ ["dropdown"] ++ if DOFItem `elem` opts then ["item"] else [])
+  where flags = map (T.toLower . T.drop 3 . tshow) . init . L.sortOn fromEnum
 
 
 
