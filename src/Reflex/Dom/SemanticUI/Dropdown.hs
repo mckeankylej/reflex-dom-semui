@@ -232,7 +232,7 @@ data DropdownOptFlag =
 -- Helper function to build class attribute for dropdown
 dropdownClass :: [DropdownOptFlag] -> T.Text
 dropdownClass opts = T.unwords $ "ui" : (flags opts ++ ["dropdown"] ++ if DOFItem `elem` opts then ["item"] else [])
-  where flags = map (T.toLower . T.drop 3 . tshow) . init . L.sortOn fromEnum
+  where flags = map (T.toLower . T.drop 3 . tshow) . L.delete DOFItem . L.sortOn fromEnum
 
 
 
