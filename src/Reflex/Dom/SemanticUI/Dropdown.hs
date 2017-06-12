@@ -322,12 +322,14 @@ dropdownSetExactly e is =
 
 ------------------------------------------------------------------------------
 
+data Placeholder = Default Text | Normal Text
+
 -- | Config for new semantic dropdowns
 data DropdownConf t a = DropdownConf
   { _dropdownConf_initialValue :: a
   , _dropdownConf_setValue :: Event t a
   , _dropdownConf_attributes :: Map Text Text
-  , _dropdownConf_placeholder :: Text
+  , _dropdownConf_placeholder :: Placeholder
   , _dropdownConf_maxSelections :: Maybe Int
   , _dropdownConf_useLabels :: Bool
   , _dropdownConf_fullTextSearch :: Bool
@@ -340,7 +342,7 @@ instance (Reflex t) => Default (DropdownConf t (Maybe a)) where
     { _dropdownConf_initialValue = Nothing
     , _dropdownConf_setValue = never
     , _dropdownConf_attributes = mempty
-    , _dropdownConf_placeholder = mempty
+    , _dropdownConf_placeholder = Default ""
     , _dropdownConf_maxSelections = Nothing
     , _dropdownConf_useLabels = True
     , _dropdownConf_fullTextSearch = False
@@ -351,7 +353,7 @@ instance (Reflex t) => Default (DropdownConf t [a]) where
     { _dropdownConf_initialValue = mempty
     , _dropdownConf_setValue = never
     , _dropdownConf_attributes = mempty
-    , _dropdownConf_placeholder = mempty
+    , _dropdownConf_placeholder = Default ""
     , _dropdownConf_maxSelections = Nothing
     , _dropdownConf_useLabels = True
     , _dropdownConf_fullTextSearch = False
@@ -434,7 +436,10 @@ dropdownInternal items options isMulti config = do
 
     -- This holds the placeholder. Initial value must be set by js function in
     -- wrapper.
-    divClass "default text" $ text $ placeholder
+    -- divClass "default text" $ text $ placeholder
+    case placeholder of
+      Default ph -> divClass "default text" $ text ph
+      Normal  ph -> divClass "text" $ text ph
     elAttr "i" ("class" =: "dropdown icon") blank
 
     -- Dropdown menu
